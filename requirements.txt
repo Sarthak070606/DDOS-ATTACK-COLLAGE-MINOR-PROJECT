@@ -14,12 +14,3 @@ httpx==0.27.0
 jinja2==3.1.4
 python-multipart==0.0.9
 locust==2.28.0
-
-
-Explanation of each package:
-numpy: Required for numerical operations and handling arrays.
-pandas: Used for data manipulation and analysis.
-scikit-learn: Provides machine learning algorithms and tools, including the LabelEncoder and metrics.
-xgboost: The XGBoost library for training and using the XGBoost model.
-streamlit: For building the web app interface.
-pickle-mixin: A compatible version of pickle for serializing and saving models (in my case, the ddos.sav file).

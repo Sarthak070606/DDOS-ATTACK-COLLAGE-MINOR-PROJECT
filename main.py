@@ -7,12 +7,13 @@ from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 from collections import defaultdict, deque
-from sklearn.ensemble import IsolationForest
+from sklearn.ensemble import IsolationForest  
 import numpy as np
 import sqlite3, time, threading, joblib, os, asyncio, json
 import uvicorn
 
-app = FastAPI(title="CRETA", version="3.0.0", docs_url=None, redoc_url=None)
+app = FastAPI(title="DDoS Shield", docs_url=None, redoc_url=None)
+
 templates = Jinja2Templates(directory="templates")
 
 limiter = Limiter(key_func=get_remote_address)
@@ -24,7 +25,7 @@ app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], all
 WINDOW       = 10
 BLOCK_SECS   = 60
 TRAIN_EVERY  = 30
-MODEL_PATH   = "creta_model.pkl"
+MODEL_PATH   = "ddos_model.pkl"
 EXEMPT_PATHS = {"/ui", "/api/dashboard", "/api/unblock", "/health", "/metrics/stream"}
 
 HONEYPOT_PATHS = {"/admin", "/wp-admin", "/phpmyadmin", "/.env", "/config", "/shell", "/.git", "/passwd"}
@@ -86,7 +87,7 @@ def load_model():
         try:
             model = joblib.load(MODEL_PATH)
             model_ready = True
-            print(f"[CRETA] Model loaded")
+            print(f"[DDoS Shield] Model loaded")
         except: pass
 
 load_model()
@@ -98,7 +99,7 @@ def train_model():
     model.fit(X)
     model_ready = True
     joblib.dump(model, MODEL_PATH)
-    print("[CRETA] Model retrained")
+    print("[DDoS Shield] Model retrained")
 
 
 def get_real_ip(request: Request) -> str:
@@ -143,7 +144,7 @@ def block_ip(ip: str, reason: str):
             "ts": round(time.time(),2), "ip": ip,
             "event": f"BLOCKED: {reason}", "type": "block"
         })
-    print(f"[CRETA] Blocked {ip} — {reason}")
+    print(f"[DDoS Shield] Blocked {ip} — {reason}")
 
 def unblock_ip(ip: str):
     conn = get_conn()
